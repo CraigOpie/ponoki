@@ -60,7 +60,7 @@ pip install -e .
 Then, to run the unit tests for PonoKi, execute the following command:
 
 ```bash
-pytest --cov=ponoki tests/
+pytest --cov=ponoki --cov-report term-missing tests/
 ```
 
 ### Coverage Reports
@@ -68,7 +68,7 @@ pytest --cov=ponoki tests/
 To generate a coverage report, execute the following command:
 
 ```bash
-pytest --cov=ponoki --cov-report=html tests/
+pytest --cov=ponoki --cov-report=html term-missing tests/
 ```
 
 ## Dependencies

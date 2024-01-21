@@ -54,3 +54,18 @@ class TestPasswordChange:
 
 class TestPasswordCompromised:
     """Group of tests to check if password is compromised"""
+    @pytest.mark.parametrize("mock_status, mock_text, expected_result", [
+        (200, '1E4C9B93F3F0682250B6CF8331B7EE68FD8:2', 1),  # Compromised password
+        (200, '', 0),   # Safe password
+        (404, '', -1),  # API failure
+    ])
+    def test_password_compromised(self, mocker, mock_status, mock_text, expected_result):
+        mock_get = mocker.patch('requests.get')
+        mock_get.return_value.status_code = mock_status
+        mock_get.return_value.text = mock_text
+
+        assert PonoKi.check_password('password') == expected_result
+
+    def test_network_exception(self, mocker):
+        mocker.patch('requests.get', side_effect=requests.RequestException)
+        assert PonoKi.check_password('password') == -1

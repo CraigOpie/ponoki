@@ -1,5 +1,6 @@
 # ponoki.py
 
+import hashlib
 import requests
 import re
 import logging
@@ -9,6 +10,11 @@ class PonoKi:
     SPECIAL_CHARS = "~!@#$%^&*()-_"
     SPECIAL_CHARS_REGEX = re.compile("[" + re.escape(SPECIAL_CHARS) + "]")
     DISALLOWED_CHARS_REGEX = re.compile(r"[+=\[\]\/?><,;:\'\"\\|`]")
+    HIBP_API_URL = "https://api.pwnedpasswords.com/range/"
+    PASSWORD_SAFE = 0
+    PASSWORD_COMPROMISED = 1
+    PASSWORD_WEAK = 2
+    STATUS_UNDETERMINED = -1
 
     @staticmethod
     def check_password_strength(password):
@@ -101,12 +107,53 @@ class PonoKi:
     @staticmethod
     def check_password(password):
         """
-        Check if a given password has been compromised and meets strength criteria.
+        Check if a given password has been compromised.
 
         Args:
             password (str): The password to check.
 
         Returns:
             int: PASSWORD_SAFE for a good and strong password, PASSWORD_COMPROMISED for a compromised password,
-                 PASSWORD_WEAK for a weak password, STATUS_UNDETERMINED for unable to determine.
+                STATUS_UNDETERMINED for unable to determine.
         """
+        if not isinstance(password, str) or not password:
+            logging.warning("Invalid input for password check.")
+            return PonoKi.STATUS_UNDETERMINED
+
+        try:
+            # Create a SHA-1 hash of the password
+            hash_object = hashlib.sha1(password.encode('utf-8'))
+            hashed_password = hash_object.hexdigest().upper()
+
+            # Extract the first 5 characters as a prefix
+            prefix = hashed_password[:5]
+            suffix = hashed_password[5:]
+
+            # Call the API with the prefix
+            response = requests.get(PonoKi.HIBP_API_URL + prefix)
+
+            if response.status_code == 200:
+                hashes = (line.split(':') for line in response.text.splitlines())
+                for h, _ in hashes:
+                    if h.startswith(suffix):
+                        return PonoKi.PASSWORD_COMPROMISED
+                return PonoKi.PASSWORD_SAFE
+            elif 400 <= response.status_code < 500:
+                logging.error(f"Client error: {response.status_code}")
+                return PonoKi.STATUS_UNDETERMINED
+            elif 500 <= response.status_code:
+                logging.error(f"Server error: {response.status_code}")
+                return PonoKi.STATUS_UNDETERMINED
+            else:
+                logging.warning(f"Unexpected status code: {response.status_code}")
+                return PonoKi.STATUS_UNDETERMINED
+        except requests.Timeout:
+            logging.error("Request timeout")
+            return PonoKi.STATUS_UNDETERMINED
+        except requests.ConnectionError:
+            logging.error("Connection error")
+            return PonoKi.STATUS_UNDETERMINED
+        except requests.RequestException as e:
+            logging.error(f"Request exception: {e}")
+            return PonoKi.STATUS_UNDETERMINED
+            
