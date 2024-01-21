@@ -5,6 +5,8 @@ from ponoki import PonoKi
 
 class TestPasswordStrength(unittest.TestCase):
     """Group of tests to check password strength"""
+    def test_strength_valid_password(self):
+        self.assertTrue(PonoKi.check_password_strength('ValidPassword123!'))
 
 
 class TestPasswordChange(unittest.TestCase):
