@@ -8,6 +8,9 @@ class TestPasswordStrength(unittest.TestCase):
     def test_strength_valid_password(self):
         self.assertTrue(PonoKi.check_password_strength('ValidPassword123!'))
 
+    def test_strength_short_password(self):
+        self.assertFalse(PonoKi.check_password_strength('short'))
+
 
 class TestPasswordChange(unittest.TestCase):
     """Group of tests to check password change criteria"""
