@@ -51,10 +51,16 @@ PonoKi includes a comprehensive set of unit tests to ensure functionality and re
 
 ### Running Tests
 
-To run the unit tests for PonoKi, execute the following command:
+Locally install the PonoKi package with the following command:
 
 ```bash
-python -m unittest discover -s tests
+pip install -e .
+```
+
+Then, to run the unit tests for PonoKi, execute the following command:
+
+```bash
+pytest --cov=ponoki tests/
 ```
 
 ### Coverage Reports
@@ -62,7 +68,7 @@ python -m unittest discover -s tests
 To generate a coverage report, execute the following command:
 
 ```bash
-coverage html
+pytest --cov=ponoki --cov-report=html tests/
 ```
 
 ## Dependencies

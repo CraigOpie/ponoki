@@ -33,11 +33,23 @@ class TestPasswordStrength:
 
 class TestPasswordChange:
     """Group of tests to check password change criteria"""
-    def test_change_significant_difference(self):
-        assert PonoKi.check_password_change('oldPassword123!', 'newPassword987@')
+    def test_change_identical_passwords(self):
+        assert not PonoKi.check_password_change('SamePassword123!', 'SamePassword123!')
 
-    def test_change_insufficient_difference(self):
-        assert not PonoKi.check_password_change('oldPassword123!', 'oldPassword1234!')
+    def test_change_reversed_password(self):
+        assert not PonoKi.check_password_change('Password123!', '!321drowssaP')
+
+    def test_change_case_only_changed(self):
+        assert not PonoKi.check_password_change('CaseChange123!', 'casechange123!')
+
+    def test_change_shifted_password(self):
+        assert not PonoKi.check_password_change('Shifted123!', 'fted123!Shi')
+
+    def test_change_insufficient_new_characters(self):
+        assert not PonoKi.check_password_change('oldPassword123!', 'oldPassword123@')
+
+    def test_change_sufficient_new_characters(self):
+        assert PonoKi.check_password_change('oldPassword123!', 'newPa$$w0rd987@')
 
 
 class TestPasswordCompromised:
