@@ -35,6 +35,9 @@ class TestPasswordChange(unittest.TestCase):
     def test_change_significant_difference(self):
         self.assertTrue(PonoKi.check_password_change('oldPassword123!', 'newPassword987@'))
 
+    def test_change_insufficient_difference(self):
+        self.assertFalse(PonoKi.check_password_change('oldPassword123!', 'oldPassword1234!'))
+
 
 class TestPasswordCompromised(unittest.TestCase):
     """Group of tests to check if password is compromised"""
