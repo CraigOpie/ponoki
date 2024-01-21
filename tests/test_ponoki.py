@@ -1,9 +1,10 @@
 # tests/test_ponoki.py
 
-import unittest
+import pytest
+from requests
 from ponoki import PonoKi
 
-class TestPasswordStrength(unittest.TestCase):
+class TestPasswordStrength:
     """Group of tests to check password strength"""
     def test_strength_valid_password(self):
         self.assertTrue(PonoKi.check_password_strength('ValidPassword123!'))
@@ -30,7 +31,7 @@ class TestPasswordStrength(unittest.TestCase):
         self.assertFalse(PonoKi.check_password_strength('Whitespace NotAllowed123!'))
 
 
-class TestPasswordChange(unittest.TestCase):
+class TestPasswordChange:
     """Group of tests to check password change criteria"""
     def test_change_significant_difference(self):
         self.assertTrue(PonoKi.check_password_change('oldPassword123!', 'newPassword987@'))
@@ -39,9 +40,5 @@ class TestPasswordChange(unittest.TestCase):
         self.assertFalse(PonoKi.check_password_change('oldPassword123!', 'oldPassword1234!'))
 
 
-class TestPasswordCompromised(unittest.TestCase):
+class TestPasswordCompromised:
     """Group of tests to check if password is compromised"""
-
-
-if __name__ == '__main__':
-    unittest.main()
