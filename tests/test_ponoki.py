@@ -14,6 +14,9 @@ class TestPasswordStrength(unittest.TestCase):
     def test_strength_no_uppercase(self):
         self.assertFalse(PonoKi.check_password_strength('longbutnouppercase123!'))
 
+    def test_strength_no_lowercase(self):
+        self.assertFalse(PonoKi.check_password_strength('NOLOWERCASE123!'))
+
 
 class TestPasswordChange(unittest.TestCase):
     """Group of tests to check password change criteria"""
