@@ -1,8 +1,13 @@
 # ponoki.py
 
 import requests
+import re
 
 class PonoKi:
+    MIN_LENGTH = 15
+    SPECIAL_CHARS = "~!@#$%^&*()-_"
+    SPECIAL_CHARS_REGEX = re.compile("[" + SPECIAL_CHARS + "]")
+    DISALLOWED_CHARS_REGEX = re.compile(r"[+=\[\]\/?><,;:\'\"\\|`]")
 
     @staticmethod
     def check_password_strength(password):
@@ -15,6 +20,18 @@ class PonoKi:
         Returns:
             bool: True if the password meets the criteria, False otherwise.
         """
+        if len(password) < PonoKi.MIN_LENGTH:
+            return False
+
+        if (not re.search(r"[A-Z]", password) or
+                not re.search(r"[a-z]", password) or
+                not re.search(r"[0-9]", password) or
+                not PonoKi.SPECIAL_CHARS_REGEX.search(password) or
+                PonoKi.DISALLOWED_CHARS_REGEX.search(password) or
+                ' ' in password):
+            return False
+
+        return True
 
     @staticmethod
     def check_password_change(old_password, new_password):
