@@ -26,6 +26,9 @@ class TestPasswordStrength(unittest.TestCase):
     def test_strength_invalid_char(self):
         self.assertFalse(PonoKi.check_password_strength('Invalid/Character123!'))
 
+    def test_strength_whitespace(self):
+        self.assertFalse(PonoKi.check_password_strength('Whitespace NotAllowed123!'))
+
 
 class TestPasswordChange(unittest.TestCase):
     """Group of tests to check password change criteria"""
